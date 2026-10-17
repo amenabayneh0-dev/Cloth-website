@@ -184,7 +184,7 @@ const Garment = ({ kind, fab }) => html`
 const Photo = ({ tone, img, mark, kind, fab }) => html`
   <div class=${"photo" + (kind ? " g" : "")} style=${{ background: `linear-gradient(160deg, ${tone[0]}, ${tone[1]})`, "--arch": `linear-gradient(to top, ${tone[1]}, ${tone[0]}55)` }}>
     ${kind && html`<${Garment} kind=${kind} fab=${fab} />`}
-    ${img && html`<img src=${img} alt="" loading="lazy" />`}
+    ${img && html`<img src=${img} alt="" loading="lazy" decoding="async" />`}
     ${mark && html`<div class="mark">${mark}</div>`}
   </div>`;
 
@@ -205,7 +205,7 @@ function Header({ count, wishCount, onCart, onWish, go }) {
         <nav class="nav">${link("Men", "Men's Clothing")}${link("Women", "Women's Clothing")}</nav>
         <a class="logo" href="#top">VELORA</a>
         <nav class="nav">${link("Shoes", "Shoes")}${link("Sale", "Sale Items")}</nav>
-        <div style=${{ display: "flex" }}>
+        <div class="actions">
           <button class="icon-btn" aria-label=${`Wishlist, ${wishCount} saved`} onClick=${onWish}>
             <${Icon} name="heart" />${wishCount > 0 && html`<span class="badge">${wishCount}</span>`}
           </button>
@@ -222,15 +222,15 @@ function Header({ count, wishCount, onCart, onWish, go }) {
 }
 
 /* ---------- HERO ---------- */
-const Hero = () => html`
+const Hero = ({ onShop }) => html`
   <section class="hero" id="top">
     <${Photo} tone=${["#3b3a38", "#0c0c0c"]} />
-    <div class="hero-pic"><img src=${IMG.hero} alt="Model in sunglasses wearing a camel coat" /></div>
+    <div class="hero-pic"><img src=${IMG.hero} width="549" height="429" fetchpriority="high" decoding="async" alt="Model in sunglasses wearing a camel coat" /></div>
     <div class="wrap">
       <div class="eyebrow" style=${{ color: "rgba(255,255,255,.7)" }}>The New Season</div>
-      <h1 style=${{ marginTop: 18 }}>Define your <em>own</em> style.</h1>
+      <h1>Define your <em>own</em> style.</h1>
       <p>Considered pieces in uncompromising fabrics, made to be worn for years, not seasons.</p>
-      <a class="btn" href="#shop">Shop Now <${Icon} name="arrow" size=${18} /></a>
+      <a class="btn" href="#shop" onClick=${onShop}>Shop Now <${Icon} name="arrow" size=${18} /></a>
     </div>
     <div class="scroll">Scroll</div>
   </section>`;
@@ -450,7 +450,7 @@ function App() {
   return html`
     <${Header} count=${count} wishCount=${wish.length} go=${go} onWish=${showWishlist} onCart=${() => { setPlaced(false); setCartOpen(true); }} />
     <main>
-      <${Hero} />
+      <${Hero} onShop=${() => go("All")} />
       <${Collections} onPick=${go} />
       <${Products} category=${category} setCategory=${setCategory} wish=${wish} toggleWish=${toggleWish} onlyWish=${onlyWish} setOnlyWish=${setOnlyWish} onAdd=${addToCart} />
       <${Promo} onSale=${() => go("Sale Items")} />
